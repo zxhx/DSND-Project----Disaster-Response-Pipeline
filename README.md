@@ -18,17 +18,7 @@
 ### 二、数据源
 
 * data/disaster_categories.csv
-* data/disaster_messages.csv
-
-### 三、notebook文件夹
-
-主要用于构建pipeline，包含文件：
-
-* ETL Pipeline Preparation-zh.html
-* ETL Pipeline Preparation-zh.ipynb
-* ML Pipeline Preparation-zh.html
-* ML Pipeline Preparation-zh.ipynb
-  
+* data/disaster_messages.csv 
 
 ### 三、项目结构
 
