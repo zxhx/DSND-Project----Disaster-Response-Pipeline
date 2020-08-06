@@ -16,6 +16,13 @@ app = Flask(__name__)
 
 
 def tokenize(text):
+    '''
+    function: Tokenize
+    args: 
+        text - list of text messages (english)
+    return:
+        clean_tokens - tokenized text, clean for ML modeling
+    '''
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
 

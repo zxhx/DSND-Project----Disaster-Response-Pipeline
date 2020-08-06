@@ -1,3 +1,14 @@
+"""
+TRAIN CLASSIFIER
+Disaster Resoponse Project
+Udacity - Data Science Nanodegree
+How to run this script (Example)
+> python train_classifier.py ../data/DisasterData.db pipeline.pkl
+Arguments:
+    1) SQLite db path (containing pre-processed data)
+    2) pickle file name to save ML model
+"""
+
 import sys
 from sqlalchemy import create_engine
 import pandas as pd
@@ -24,7 +35,13 @@ nltk.download('stopwords')
 
 def load_data(database_filepath):
     '''
-    加载数据库文件
+    function: 加载数据库文件
+    args：
+        database_filepath - 数据库路径
+    
+    return:
+        X, y - feature DataFrame
+        category_names - label DataFrame
     '''
     engine = create_engine('sqlite:///'+database_filepath)
     df = pd.read_sql_table('DisasterData', engine)
@@ -36,7 +53,11 @@ def load_data(database_filepath):
 
 def tokenize(text):
     '''
-    文本分词
+    function: Tokenize function
+    args: text - list of text messages (english)
+
+    return: clean_tokens - tokenized text, clean for ML modeling
+
     '''
     text = re.sub(r"[^a-zA-Z0-9]", " ", text)   # 去掉标点
     tokens = word_tokenize(text)                # 分词
@@ -51,7 +72,9 @@ def tokenize(text):
 
 def build_model():
     '''
-    改进的ML管道+网格搜索
+    function: 改进的ML管道+网格搜索
+    return: 返回经网格搜索GridSearchCV处理后的模型
+
     '''
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
@@ -68,7 +91,16 @@ def build_model():
 
 def evaluate_model(model, X_test, y_test, category_names):
     '''
-    模型验证
+    function: 模型验证
+
+    args: 
+        model - scikit ML Pipeline 
+        X_test - test features
+        y_test - test labels
+        category_names - label names
+    
+    return:
+        scores - f1 scores
     '''
     y_pred = model.predict(X_test)
     scores = pd.DataFrame(data=None, index=category_names, columns =['accuracy','precision','recall','F1','True_cnt','False_cnt'],dtype='float')
@@ -87,7 +119,12 @@ def evaluate_model(model, X_test, y_test, category_names):
 
 def save_model(model, model_filepath):
     '''
-    模型保存
+    function: 保存模型
+    
+    args: 
+        model - GridSearchCV or scikit Pipeline object
+        model_filepath - destination path to save .pkl file
+
     '''
     with open(model_filepath, "wb") as f:
         pickle.dump(model, f)

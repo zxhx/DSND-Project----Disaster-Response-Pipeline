@@ -1,41 +1,68 @@
 
 import sys
 import pandas as pd
+import numpy as np
 import sqlalchemy
 from sqlalchemy import create_engine
 
 
-def load_data(messages_filepath, categories_filepath): # 加载数据集
+def load_data(messages_filepath, categories_filepath): 
+    '''
+    function: Load Data
+    args: 
+        messages_filepath - path to messages csv file
+        categories_filepath - path to categories csv file
+    return: 
+        df - Loaded dasa as Pandas DataFrame
+    '''
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
     df = messages.merge(categories, how='left', on=['id'])
     return df
 
 
-def clean_data(df): # 数据清洗
-    categories = df['categories'].str.split(';', expand=True)
-    row = categories.iloc[0]
-    category_colnames = row.transform(lambda x: x[:-2]).tolist()
+def clean_data(df): 
+    '''
+    function: clean data
+    args: 
+        df - raw data Pandas DataFrame
+    return: 
+        df - clean data Pandas DataFrame
+    '''
+
+    categories = df.categories.str.split(pat=';', expand=True)
+    firstrow = categories.iloc[0, :]
+    category_colnames = firstrow.apply(lambda x: x[:-2])
     categories.columns = category_colnames
-
     for column in categories:
-        categories[column] = categories[column].transform(lambda x: x[-1:])
-        categories[column] = pd.to_numeric(categories[column])
-
-    df.drop('categories', axis = 1, inplace = True)
+        categories[column] = categories[column].str[-1]
+        categories[column] = categories[column].astype(np.int)
+    
+    df = df.drop('categories', axis=1)
     df = pd.concat([df, categories], axis=1)
-
-    df.drop_duplicates(inplace=True)
-   
+    df = df.drop_duplicates()
     return df
 
 
-def save_data(df, database_filename):   # 将数据保存为数据库文件
+def save_data(df, database_filename): 
+    '''
+    function: save data
+    args: 
+        df - Clean data Pandas DataFrame
+        database_filename - database file (.db) destination path
+    '''
+
     engine = create_engine('sqlite:///'+database_filename)
     df.to_sql('DisasterData', engine, index=False, if_exists='replace')  
 
 
 def main():
+    '''
+    function: 
+        - Data extraction from .csv
+        - Data cleaning and pre-processing
+        - Data loading to SQLite database
+    '''
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
