@@ -13,7 +13,7 @@ def load_data(messages_filepath, categories_filepath):
         messages_filepath - path to messages csv file
         categories_filepath - path to categories csv file
     return: 
-        df - Loaded dasa as Pandas DataFrame
+        df - Loaded data as Pandas DataFrame
     '''
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
