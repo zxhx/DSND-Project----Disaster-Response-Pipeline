@@ -41,6 +41,7 @@ def clean_data(df):
     df = df.drop('categories', axis=1)
     df = pd.concat([df, categories], axis=1)
     df = df.drop_duplicates()
+    df = df[~df.related.isin([2])]
     return df
 
 
@@ -73,6 +74,7 @@ def main():
 
         print('Cleaning data...')
         df = clean_data(df)
+        # print("df.related.value_counts() = \n {}".format(df.related.value_counts()))
         
         print('Saving data...\n    DATABASE: {}'.format(database_filepath))
         save_data(df, database_filepath)

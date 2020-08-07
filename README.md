@@ -48,20 +48,8 @@ train_classifier.py: ML pipeline，主要实现：
 - To run ETL pipeline that cleans data and stores in database
     `python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterData.db`
     
-    Run the commands:
-    
-    cd /data/ 
-    
-    python process_data.py disaster_messages.csv  disaster_categories.csv DisasterData.db 
-    
 - To run ML pipeline that trains classifier and saves
-    `python ../models/train_classifier.py ../data/DisasterData.db models/pipeline.pkl`
-    
-    Run the cmd:
-    
-    cd /models/ 
-    
-    python train_classifier.py ../data/DisasterData.db pipeline.pkl
+    `python models/train_classifier.py data/DisasterData.db models/pipeline.pkl`
 
 2) Run the following command in the app's directory to run your web app.
 `python run.py`
